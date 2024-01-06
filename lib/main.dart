@@ -1,9 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:game_hub/game/game.dart';
 import 'package:game_hub/home/home.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nes_ui/nes_ui.dart';
 import 'firebase_options.dart';
+
+final _router = GoRouter(
+  routes: [
+    GoRoute(
+      path: '/',
+      builder: (context, state) => const HomeView(),
+    ),
+    GoRoute(
+      path: '/game/:gameId',
+      builder: (context, state) => GameView(
+        gameId: state.pathParameters['gameId'] ?? '',
+      ),
+    ),
+  ],
+);
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,9 +43,9 @@ class MyApp extends StatelessWidget {
   Widget build(
     BuildContext context,
   ) {
-    return MaterialApp(
+    return MaterialApp.router(
       theme: flutterNesTheme(),
-      home: const HomeView(),
+      routerConfig: _router,
     );
   }
 }

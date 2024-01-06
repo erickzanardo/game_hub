@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:game_hub/domain/domain.dart';
+import 'package:game_hub/providers/providers.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nes_ui/nes_ui.dart';
 
 class HomeView extends ConsumerWidget {
@@ -23,7 +24,7 @@ class HomeView extends ConsumerWidget {
           child: Text(err.toString()),
         ),
         loading: () => const Center(
-          child: CircularProgressIndicator(),
+          child: NesPixelRowLoadingIndicator(),
         ),
       ),
     );
@@ -82,19 +83,24 @@ class _AuthenticatedView extends ConsumerWidget {
                         for (final game in games)
                           Padding(
                             padding: const EdgeInsets.all(16),
-                            child: NesContainer(
-                              child: Column(
-                                children: [
-                                  SizedBox.square(
-                                    dimension: 200,
-                                    child: Image.network(
-                                      game.thumb,
-                                      filterQuality: FilterQuality.none,
-                                      fit: BoxFit.contain,
+                            child: NesPressable(
+                              onPress: () {
+                                context.go('/game/${game.id}');
+                              },
+                              child: NesContainer(
+                                child: Column(
+                                  children: [
+                                    SizedBox.square(
+                                      dimension: 200,
+                                      child: Image.network(
+                                        game.thumb,
+                                        filterQuality: FilterQuality.none,
+                                        fit: BoxFit.contain,
+                                      ),
                                     ),
-                                  ),
-                                  Text(game.name),
-                                ],
+                                    Text(game.name),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -110,7 +116,7 @@ class _AuthenticatedView extends ConsumerWidget {
           child: Text(err.toString()),
         ),
         loading: () => const Center(
-          child: CircularProgressIndicator(),
+          child: NesPixelRowLoadingIndicator(),
         ),
       ),
     );
