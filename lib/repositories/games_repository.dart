@@ -39,11 +39,12 @@ class Game extends Equatable {
 
 extension on DocumentSnapshot<Map<String, dynamic>> {
   Game toGame() {
+    final values = data();
     return Game(
       id: id,
-      name: this['name'],
-      description: this['description'],
-      thumb: this['thumb'],
+      name: values?['name'] as String? ?? '',
+      description: values?['description'] as String? ?? '',
+      thumb: values?['thumb'] as String? ?? '',
     );
   }
 }

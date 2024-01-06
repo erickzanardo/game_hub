@@ -28,6 +28,6 @@ class AuthRepository {
       _firebaseAuth.authStateChanges().map((user) => user?.toSession());
 
   Future<void> authenticate() async {
-    await FirebaseAuth.instance.signInWithPopup(GoogleAuthProvider());
+    await _firebaseAuth.signInWithPopup(GoogleAuthProvider());
   }
 }
