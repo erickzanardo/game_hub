@@ -41,9 +41,11 @@ class GameView extends ConsumerWidget {
             ),
           ),
         ),
-        error: (err, stack) => Center(
-          child: Text(err.toString()),
-        ),
+        error: (err, stack) {
+          return Center(
+            child: Text(err.toString()),
+          );
+        },
         loading: () => const Center(
           child: NesPixelRowLoadingIndicator(),
         ),

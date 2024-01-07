@@ -20,9 +20,11 @@ class HomeView extends ConsumerWidget {
             return const _AuthenticatedView();
           }
         },
-        error: (err, stack) => Center(
-          child: Text(err.toString()),
-        ),
+        error: (err, stack) {
+          return Center(
+            child: Text(err.toString()),
+          );
+        },
         loading: () => const Center(
           child: NesPixelRowLoadingIndicator(),
         ),
@@ -41,11 +43,12 @@ class _UnauthenticatedView extends ConsumerWidget {
         children: [
           const Text('Unauthenticated'),
           const SizedBox(height: 16),
-          ElevatedButton(
+          NesButton(
+            type: NesButtonType.primary,
             onPressed: () {
               ref.read(authStateProvider.notifier).authenticate();
             },
-            child: const Text('Log with google'),
+            child: const Text('Log with Google'),
           ),
         ],
       ),
