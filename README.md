@@ -1,16 +1,10 @@
 # game_hub
 
-A new Flutter project.
+This repository implements a simple application supposed to be a Game Hub from Game Studio.
 
-## Getting Started
+It includes very simple features where users can log in and get games available to them.
 
-This project is a starting point for a Flutter application.
+It was created so I could learn about Riverpod being used in a simpler, more controlled, but
+still closer to real life application example.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+This was created for learning purposed, but, Hopefully this template can help others.
