@@ -56,9 +56,17 @@ class GamesRepository {
   final FirebaseFirestore _firestore;
 
   Future<List<Game>> fetchUserGames(String id) async {
+    final gamesAccessList = await _firestore
+        .collection('games_access')
+        .where('user_id', isEqualTo: id)
+        .get();
+
+    final ids = gamesAccessList.docs.map((game) => game['game_id']).toList();
+
     final games = await _firestore
         .collection('games')
-        .where('users', arrayContainsAny: [id, '*']).get();
+        .where(FieldPath.documentId, whereIn: ids)
+        .get();
 
     return games.docs.map((game) {
       return game.toGame();

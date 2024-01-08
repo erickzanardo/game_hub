@@ -5,24 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:game_hub/repositories/repositories.dart';
 import 'package:mocktail/mocktail.dart';
 
-class _MockFirebaseFirestore extends Mock implements FirebaseFirestore {}
-
-class _MockCollectionReference extends Mock
-    implements CollectionReference<Map<String, dynamic>> {}
-
-class _MockDocumentReference extends Mock
-    implements DocumentReference<Map<String, dynamic>> {}
-
-class _MockDocumentSnapshot extends Mock
-    implements DocumentSnapshot<Map<String, dynamic>> {}
-
-class _MockQuery extends Mock implements Query<Map<String, dynamic>> {}
-
-class _MockQuerySnapshot extends Mock
-    implements QuerySnapshot<Map<String, dynamic>> {}
-
-class _MockQueryDocumentSnapshot extends Mock
-    implements QueryDocumentSnapshot<Map<String, dynamic>> {}
+import '../helpers/helpers.dart';
 
 void main() {
   group('Game', () {
@@ -71,12 +54,17 @@ void main() {
   });
   group('GamesRepository', () {
     late FirebaseFirestore firestore;
-    late CollectionReference<Map<String, dynamic>> collection;
+    late CollectionReference<Map<String, dynamic>> gamesCollection;
+    late CollectionReference<Map<String, dynamic>> gamesAccessCollection;
 
     setUp(() {
-      firestore = _MockFirebaseFirestore();
-      collection = _MockCollectionReference();
-      when(() => firestore.collection('games')).thenReturn(collection);
+      firestore = MockFirebaseFirestore();
+      gamesCollection = MockCollectionReference();
+      gamesAccessCollection = MockCollectionReference();
+
+      when(() => firestore.collection('games')).thenReturn(gamesCollection);
+      when(() => firestore.collection('games_access'))
+          .thenReturn(gamesAccessCollection);
     });
 
     test('can be instantiated', () {
@@ -89,12 +77,12 @@ void main() {
     test('fetchGame returns a game', () async {
       final gamesRepository = GamesRepository(firestore: firestore);
 
-      final docRef = _MockDocumentReference();
-      when(() => collection.doc('1')).thenReturn(docRef);
+      final docRef = MockDocumentReference();
+      when(() => gamesCollection.doc('1')).thenReturn(docRef);
 
       when(docRef.get).thenAnswer(
         (_) async {
-          final snapshot = _MockDocumentSnapshot();
+          final snapshot = MockDocumentSnapshot();
           when(() => snapshot.id).thenReturn('1');
           when(() => snapshot.data()).thenReturn({
             'name': 'Stardustry',
@@ -123,42 +111,48 @@ void main() {
     test('fetchGames returns a list of games', () async {
       final gamesRepository = GamesRepository(firestore: firestore);
 
-      final query = _MockQuery();
-      when(
-        () => collection.where(
-          'users',
-          arrayContainsAny: ['1', '*'],
-        ),
-      ).thenReturn(query);
+      mockQueryOnCollection(
+        collection: gamesAccessCollection,
+        createQuery: (collection) {
+          final query = MockQuery();
+          when(
+            () => collection.where(
+              'user_id',
+              isEqualTo: '1',
+            ),
+          ).thenReturn(query);
+          return query;
+        },
+        result: {
+          '1': {'game_id': '1', 'user_id': '1'},
+          '2': {'game_id': '2', 'user_id': '1'},
+        },
+      );
 
-      when(query.get).thenAnswer(
-        (_) async {
-          final querySnapshot = _MockQuerySnapshot();
+      mockQueryOnCollection(
+        collection: gamesCollection,
+        createQuery: (collection) {
+          final query = MockQuery();
 
-          final game1 = _MockQueryDocumentSnapshot();
-          when(() => game1.id).thenReturn('1');
-          when(() => game1.data()).thenReturn({
+          when(
+            () => collection.where(
+              FieldPath.documentId,
+              whereIn: ['1', '2'],
+            ),
+          ).thenReturn(query);
+          return query;
+        },
+        result: {
+          '1': {
             'name': 'Stardustry',
             'description': 'A Great game releasing soon!',
             'thumb': '',
-          });
-
-          final game2 = _MockQueryDocumentSnapshot();
-          when(() => game2.id).thenReturn('2');
-          when(() => game2.data()).thenReturn({
+          },
+          '2': {
             'name': 'Treelings',
             'description': 'A Great game releasing soon!',
             'thumb': '',
-          });
-
-          when(() => querySnapshot.docs).thenReturn([game1, game2]);
-
-          when(() => querySnapshot.docs).thenReturn([
-            game1,
-            game2,
-          ]);
-
-          return querySnapshot;
+          },
         },
       );
 
