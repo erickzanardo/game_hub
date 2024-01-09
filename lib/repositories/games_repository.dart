@@ -37,6 +37,57 @@ class Game extends Equatable {
       ];
 }
 
+class GameVersion extends Equatable {
+  const GameVersion({
+    required this.id,
+    required this.gameId,
+    required this.version,
+    required this.description,
+    this.macosUrl,
+    this.windowsUrl,
+    this.linuxUrl,
+  });
+
+  final String id;
+  final String gameId;
+  final String version;
+  final String description;
+  final String? macosUrl;
+  final String? windowsUrl;
+  final String? linuxUrl;
+
+  GameVersion copyWith({
+    String? id,
+    String? gameId,
+    String? version,
+    String? description,
+    String? macosUrl,
+    String? windowsUrl,
+    String? linuxUrl,
+  }) {
+    return GameVersion(
+      id: id ?? this.id,
+      gameId: gameId ?? this.gameId,
+      version: version ?? this.version,
+      description: description ?? this.description,
+      macosUrl: macosUrl ?? this.macosUrl,
+      windowsUrl: windowsUrl ?? this.windowsUrl,
+      linuxUrl: linuxUrl ?? this.linuxUrl,
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+        id,
+        gameId,
+        version,
+        description,
+        macosUrl,
+        windowsUrl,
+        linuxUrl,
+      ];
+}
+
 extension on DocumentSnapshot<Map<String, dynamic>> {
   Game toGame() {
     final values = data();
@@ -45,6 +96,19 @@ extension on DocumentSnapshot<Map<String, dynamic>> {
       name: values?['name'] as String? ?? '',
       description: values?['description'] as String? ?? '',
       thumb: values?['thumb'] as String? ?? '',
+    );
+  }
+
+  GameVersion toGameVersion() {
+    final values = data();
+    return GameVersion(
+      id: id,
+      gameId: values?['game_id'] as String? ?? '',
+      version: values?['version'] as String? ?? '',
+      description: values?['description'] as String? ?? '',
+      macosUrl: values?['macos_url'] as String?,
+      windowsUrl: values?['windows_url'] as String?,
+      linuxUrl: values?['linux_url'] as String?,
     );
   }
 }
@@ -77,5 +141,16 @@ class GamesRepository {
     final game = await _firestore.collection('games').doc(id).get();
 
     return game.toGame();
+  }
+
+  Future<List<GameVersion>> fetchGameVersions(String id) async {
+    final versions = await _firestore
+        .collection('games_versions')
+        .where('game_id', isEqualTo: id)
+        .get();
+
+    return versions.docs.map((version) {
+      return version.toGameVersion();
+    }).toList();
   }
 }

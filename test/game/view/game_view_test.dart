@@ -34,6 +34,17 @@ void main() {
         ),
       );
 
+      when(() => gamesRepository.fetchGameVersions('1')).thenAnswer(
+        (_) async => const [
+          GameVersion(
+            id: 'id',
+            gameId: '1',
+            version: '0.0.1',
+            description: '',
+          ),
+        ],
+      );
+
       when(() => authRepository.currentUser).thenReturn(const Session(id: ''));
 
       await mockNetworkImages(
@@ -60,6 +71,7 @@ void main() {
       expect(find.byType(GameView), findsOneWidget);
       expect(find.text('Stardustry'), findsOneWidget);
       expect(find.text('A Great game releasing soon!'), findsOneWidget);
+      expect(find.text('0.0.1'), findsOneWidget);
       expect(find.byType(Image), findsOneWidget);
     });
 
@@ -96,7 +108,7 @@ void main() {
         },
       );
       expect(find.byType(GameView), findsOneWidget);
-      expect(find.byType(NesPixelRowLoadingIndicator), findsOneWidget);
+      expect(find.byType(NesPixelRowLoadingIndicator), findsNWidgets(2));
     });
 
     testWidgets('renders an error when something goes wrong', (tester) async {
@@ -125,6 +137,38 @@ void main() {
       );
       expect(find.byType(GameView), findsOneWidget);
       expect(find.text('Exception: User not authenticated'), findsOneWidget);
+    });
+
+    testWidgets('renders an error when loading the versions fail',
+        (tester) async {
+      when(() => gamesRepository.fetchGameVersions('1')).thenThrow(
+        Exception('Error fetching game versions'),
+      );
+
+      await mockNetworkImages(
+        () async {
+          await tester.pumpWidget(
+            ProviderScope(
+              overrides: [
+                gamesRepositoryProvider().overrideWith(
+                  (_) => gamesRepository,
+                ),
+                authRepositoryProvider().overrideWith(
+                  (_) => authRepository,
+                ),
+              ],
+              child: MaterialApp(
+                theme: flutterNesTheme(),
+                home: GameView(gameId: '1'),
+              ),
+            ),
+          );
+          await tester.pumpAndSettle();
+        },
+      );
+      expect(find.byType(GameView), findsOneWidget);
+      expect(
+          find.text('Exception: Error fetching game versions'), findsOneWidget);
     });
   });
 }
