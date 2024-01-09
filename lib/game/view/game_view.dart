@@ -64,10 +64,31 @@ class GameView extends ConsumerWidget {
                     : ListTile(
                         title: Text(gameVersions.first.version),
                         subtitle: Text(gameVersions.first.description),
-                        //trailing: IconButton(
-                        //  icon: const Icon(Icons.download),
-                        //  onPressed: () {},
-                        //),
+                        trailing: ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            maxWidth: 400,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (gameVersions.first.macosUrl != null)
+                                _DownloadLink(
+                                  label: 'macOS',
+                                  link: gameVersions.first.macosUrl!,
+                                ),
+                              if (gameVersions.first.windowsUrl != null)
+                                _DownloadLink(
+                                  label: 'Windows',
+                                  link: gameVersions.first.windowsUrl!,
+                                ),
+                              if (gameVersions.first.linuxUrl != null)
+                                _DownloadLink(
+                                  label: 'Linux',
+                                  link: gameVersions.first.linuxUrl!,
+                                ),
+                            ],
+                          ),
+                        ),
                       ),
               ),
             ),
@@ -81,6 +102,35 @@ class GameView extends ConsumerWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _DownloadLink extends StatelessWidget {
+  const _DownloadLink({
+    required this.label,
+    required this.link,
+  });
+
+  final String label;
+  final String link;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(4),
+      child: NesButton(
+        onPressed: () {
+          //
+        },
+        type: NesButtonType.normal,
+        child: Text(
+          label,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                fontSize: 8,
+              ),
+        ),
       ),
     );
   }
