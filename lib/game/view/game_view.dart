@@ -73,7 +73,7 @@ class GameView extends ConsumerWidget {
                             children: [
                               if (gameVersions.first.macosUrl != null)
                                 _DownloadLink(
-                                  label: 'macOS',
+                                  label: 'MacOS',
                                   link: gameVersions.first.macosUrl!,
                                 ),
                               if (gameVersions.first.windowsUrl != null)

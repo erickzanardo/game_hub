@@ -10,6 +10,8 @@ import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:nes_ui/nes_ui.dart';
 
+import '../../helpers/helpers.dart';
+
 class _MockGamesRepository extends Mock implements GamesRepository {}
 
 class _MockAuthRepository extends Mock implements AuthRepository {}
@@ -41,6 +43,9 @@ void main() {
             gameId: '1',
             version: '0.0.1',
             description: '',
+            macosUrl: '',
+            windowsUrl: '',
+            linuxUrl: '',
           ),
         ],
       );
@@ -72,7 +77,181 @@ void main() {
       expect(find.text('Stardustry'), findsOneWidget);
       expect(find.text('A Great game releasing soon!'), findsOneWidget);
       expect(find.text('0.0.1'), findsOneWidget);
+      expect(find.text('MacOS'), findsOneWidget);
+      expect(find.text('Linux'), findsOneWidget);
+      expect(find.text('Windows'), findsOneWidget);
       expect(find.byType(Image), findsOneWidget);
+    });
+
+    testWidgets('download the linux version', (tester) async {
+      tester.setScreenSize(Size(1280, 1280));
+      addTearDown(tester.view.resetPhysicalSize);
+
+      when(() => gamesRepository.fetchGame('1')).thenAnswer(
+        (_) async => const Game(
+          id: '1',
+          name: 'Stardustry',
+          description: 'A Great game releasing soon!',
+          thumb: '',
+        ),
+      );
+
+      when(() => gamesRepository.fetchGameVersions('1')).thenAnswer(
+        (_) async => const [
+          GameVersion(
+            id: 'id',
+            gameId: '1',
+            version: '0.0.1',
+            description: '',
+            macosUrl: '',
+            windowsUrl: '',
+            linuxUrl: '',
+          ),
+        ],
+      );
+
+      when(() => authRepository.currentUser).thenReturn(const Session(id: ''));
+
+      await mockNetworkImages(
+        () async {
+          await tester.pumpWidget(
+            ProviderScope(
+              overrides: [
+                gamesRepositoryProvider().overrideWith(
+                  (_) => gamesRepository,
+                ),
+                authRepositoryProvider().overrideWith(
+                  (_) => authRepository,
+                ),
+              ],
+              child: MaterialApp(
+                theme: flutterNesTheme(),
+                home: GameView(gameId: '1'),
+              ),
+            ),
+          );
+          await tester.pumpAndSettle();
+        },
+      );
+
+      final button = find.ancestor(
+          of: find.text('Linux'), matching: find.byType(NesButton));
+      await tester.tap(button);
+      // TODO(erickzanardo): Add assertion
+    });
+
+    testWidgets('download the macos version', (tester) async {
+      tester.setScreenSize(Size(1280, 1280));
+      addTearDown(tester.view.resetPhysicalSize);
+
+      when(() => gamesRepository.fetchGame('1')).thenAnswer(
+        (_) async => const Game(
+          id: '1',
+          name: 'Stardustry',
+          description: 'A Great game releasing soon!',
+          thumb: '',
+        ),
+      );
+
+      when(() => gamesRepository.fetchGameVersions('1')).thenAnswer(
+        (_) async => const [
+          GameVersion(
+            id: 'id',
+            gameId: '1',
+            version: '0.0.1',
+            description: '',
+            macosUrl: '',
+            windowsUrl: '',
+            linuxUrl: '',
+          ),
+        ],
+      );
+
+      when(() => authRepository.currentUser).thenReturn(const Session(id: ''));
+
+      await mockNetworkImages(
+        () async {
+          await tester.pumpWidget(
+            ProviderScope(
+              overrides: [
+                gamesRepositoryProvider().overrideWith(
+                  (_) => gamesRepository,
+                ),
+                authRepositoryProvider().overrideWith(
+                  (_) => authRepository,
+                ),
+              ],
+              child: MaterialApp(
+                theme: flutterNesTheme(),
+                home: GameView(gameId: '1'),
+              ),
+            ),
+          );
+          await tester.pumpAndSettle();
+        },
+      );
+
+      final button = find.ancestor(
+          of: find.text('MacOS'), matching: find.byType(NesButton));
+      await tester.tap(button);
+      // TODO(erickzanardo): Add assertion
+    });
+
+    testWidgets('download the windows version', (tester) async {
+      tester.setScreenSize(Size(1280, 1280));
+      addTearDown(tester.view.resetPhysicalSize);
+
+      when(() => gamesRepository.fetchGame('1')).thenAnswer(
+        (_) async => const Game(
+          id: '1',
+          name: 'Stardustry',
+          description: 'A Great game releasing soon!',
+          thumb: '',
+        ),
+      );
+
+      when(() => gamesRepository.fetchGameVersions('1')).thenAnswer(
+        (_) async => const [
+          GameVersion(
+            id: 'id',
+            gameId: '1',
+            version: '0.0.1',
+            description: '',
+            macosUrl: '',
+            windowsUrl: '',
+            linuxUrl: '',
+          ),
+        ],
+      );
+
+      when(() => authRepository.currentUser).thenReturn(const Session(id: ''));
+
+      await mockNetworkImages(
+        () async {
+          await tester.pumpWidget(
+            ProviderScope(
+              overrides: [
+                gamesRepositoryProvider().overrideWith(
+                  (_) => gamesRepository,
+                ),
+                authRepositoryProvider().overrideWith(
+                  (_) => authRepository,
+                ),
+              ],
+              child: MaterialApp(
+                theme: flutterNesTheme(),
+                home: GameView(gameId: '1'),
+              ),
+            ),
+          );
+          await tester.pumpAndSettle();
+        },
+      );
+
+      final button = find.ancestor(
+          of: find.text('Windows'), matching: find.byType(NesButton));
+      await tester.tap(button);
+      // TODO(erickzanardo): Add assertion
     });
 
     testWidgets('renders a loading indicator', (tester) async {
