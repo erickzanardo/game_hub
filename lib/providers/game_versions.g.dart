@@ -6,7 +6,7 @@ part of 'game_versions.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$gameVersionsHash() => r'0984a79bff210438affea925432729846bc04f09';
+String _$gameVersionsHash() => r'c6bc5fccdf8a6f9cae6c230e3c9f32af67915211';
 
 /// Copied from Dart SDK
 class _SystemHash {

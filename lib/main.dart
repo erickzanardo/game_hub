@@ -24,6 +24,16 @@ final _router = GoRouter(
       path: '/admin',
       builder: (context, state) => const AdminView(),
     ),
+    GoRoute(
+      path: '/admin/games',
+      builder: (context, state) => const GamesAdminView(),
+    ),
+    GoRoute(
+      path: '/admin/games/:gameId/versions',
+      builder: (context, state) => GameVersionsAdminView(
+        gameId: state.pathParameters['gameId'] ?? '',
+      ),
+    ),
   ],
 );
 
