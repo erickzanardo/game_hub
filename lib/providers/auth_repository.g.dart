@@ -6,7 +6,7 @@ part of 'auth_repository.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$authRepositoryHash() => r'50fd3e70e00877e1f3eede39ad424528fa8d9614';
+String _$authRepositoryHash() => r'edb91587be31d251087f89fad7e42b3f2fc1f005';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -41,9 +41,11 @@ class AuthRepositoryFamily extends Family<AuthRepository> {
   /// See also [authRepository].
   AuthRepositoryProvider call({
     FirebaseAuth? firebaseAuth,
+    FirebaseFirestore? firebaseFirestore,
   }) {
     return AuthRepositoryProvider(
       firebaseAuth: firebaseAuth,
+      firebaseFirestore: firebaseFirestore,
     );
   }
 
@@ -53,6 +55,7 @@ class AuthRepositoryFamily extends Family<AuthRepository> {
   ) {
     return call(
       firebaseAuth: provider.firebaseAuth,
+      firebaseFirestore: provider.firebaseFirestore,
     );
   }
 
@@ -76,10 +79,12 @@ class AuthRepositoryProvider extends AutoDisposeProvider<AuthRepository> {
   /// See also [authRepository].
   AuthRepositoryProvider({
     FirebaseAuth? firebaseAuth,
+    FirebaseFirestore? firebaseFirestore,
   }) : this._internal(
           (ref) => authRepository(
             ref as AuthRepositoryRef,
             firebaseAuth: firebaseAuth,
+            firebaseFirestore: firebaseFirestore,
           ),
           from: authRepositoryProvider,
           name: r'authRepositoryProvider',
@@ -91,6 +96,7 @@ class AuthRepositoryProvider extends AutoDisposeProvider<AuthRepository> {
           allTransitiveDependencies:
               AuthRepositoryFamily._allTransitiveDependencies,
           firebaseAuth: firebaseAuth,
+          firebaseFirestore: firebaseFirestore,
         );
 
   AuthRepositoryProvider._internal(
@@ -101,9 +107,11 @@ class AuthRepositoryProvider extends AutoDisposeProvider<AuthRepository> {
     required super.debugGetCreateSourceHash,
     required super.from,
     required this.firebaseAuth,
+    required this.firebaseFirestore,
   }) : super.internal();
 
   final FirebaseAuth? firebaseAuth;
+  final FirebaseFirestore? firebaseFirestore;
 
   @override
   Override overrideWith(
@@ -119,6 +127,7 @@ class AuthRepositoryProvider extends AutoDisposeProvider<AuthRepository> {
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
         firebaseAuth: firebaseAuth,
+        firebaseFirestore: firebaseFirestore,
       ),
     );
   }
@@ -131,13 +140,15 @@ class AuthRepositoryProvider extends AutoDisposeProvider<AuthRepository> {
   @override
   bool operator ==(Object other) {
     return other is AuthRepositoryProvider &&
-        other.firebaseAuth == firebaseAuth;
+        other.firebaseAuth == firebaseAuth &&
+        other.firebaseFirestore == firebaseFirestore;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, firebaseAuth.hashCode);
+    hash = _SystemHash.combine(hash, firebaseFirestore.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -146,6 +157,9 @@ class AuthRepositoryProvider extends AutoDisposeProvider<AuthRepository> {
 mixin AuthRepositoryRef on AutoDisposeProviderRef<AuthRepository> {
   /// The parameter `firebaseAuth` of this provider.
   FirebaseAuth? get firebaseAuth;
+
+  /// The parameter `firebaseFirestore` of this provider.
+  FirebaseFirestore? get firebaseFirestore;
 }
 
 class _AuthRepositoryProviderElement
@@ -155,6 +169,9 @@ class _AuthRepositoryProviderElement
   @override
   FirebaseAuth? get firebaseAuth =>
       (origin as AuthRepositoryProvider).firebaseAuth;
+  @override
+  FirebaseFirestore? get firebaseFirestore =>
+      (origin as AuthRepositoryProvider).firebaseFirestore;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

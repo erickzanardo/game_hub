@@ -36,3 +36,9 @@ learning, so features will be done as they are thought.
 will create the `firebase_options.dart`)
 - Enable Firestore in the project and set its rules to the `firestore.rules` found in this project.
 - Enable authentication and the google provider in it.
+
+## Creating Admin users
+
+The first admin user must be created directly from the Firestore console. Simple create a
+collection named `user_admins` and add an empty document with the same id as the user on the
+authentication panel from Firebase.

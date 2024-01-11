@@ -32,6 +32,37 @@ class MockQueryDocumentSnapshot extends Mock
   }
 }
 
+void mockDocumentOnCollection({
+  required String id,
+  required CollectionReference collection,
+  Map<String, dynamic> result = const {},
+}) {
+  final documentReference = MockDocumentReference();
+  when(() => documentReference.id).thenReturn(id);
+  when(() => collection.doc(id)).thenReturn(documentReference);
+
+  final documentSnapshot = MockDocumentSnapshot();
+  when(() => documentSnapshot.data()).thenReturn(result);
+  when(() => documentSnapshot.exists).thenReturn(true);
+
+  when(documentReference.get).thenAnswer((_) async => documentSnapshot);
+}
+
+void mockInexistentDocumentOnCollection({
+  required String id,
+  required CollectionReference collection,
+}) {
+  final documentReference = MockDocumentReference();
+  when(() => documentReference.id).thenReturn(id);
+  when(() => collection.doc(id)).thenReturn(documentReference);
+
+  final documentSnapshot = MockDocumentSnapshot();
+  when(() => documentSnapshot.data()).thenReturn(null);
+  when(() => documentSnapshot.exists).thenReturn(false);
+
+  when(documentReference.get).thenAnswer((_) async => documentSnapshot);
+}
+
 void mockQueryOnCollection({
   required CollectionReference collection,
   required Query Function(CollectionReference) createQuery,

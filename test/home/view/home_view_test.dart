@@ -26,7 +26,7 @@ void main() {
       authRepository = _MockAuthRepository();
     });
     testWidgets('renders the log button', (tester) async {
-      when(() => authRepository.currentUser).thenReturn(null);
+      when(authRepository.currentUser).thenAnswer((_) async => null);
       when(() => authRepository.authStateChanges)
           .thenAnswer((_) => Stream.empty());
 
@@ -53,7 +53,7 @@ void main() {
     });
 
     testWidgets('authenticates', (tester) async {
-      when(() => authRepository.currentUser).thenReturn(null);
+      when(authRepository.currentUser).thenAnswer((_) async => null);
       when(() => authRepository.authStateChanges)
           .thenAnswer((_) => Stream.empty());
       when(authRepository.authenticate).thenAnswer((_) async {});
@@ -82,7 +82,8 @@ void main() {
     });
 
     testWidgets('renders the game list when logged', (tester) async {
-      when(() => authRepository.currentUser).thenReturn(const Session(id: '1'));
+      when(authRepository.currentUser)
+          .thenAnswer((_) async => const Session(id: '1', isAdmin: false));
       when(() => authRepository.authStateChanges)
           .thenAnswer((_) => Stream.empty());
 
@@ -120,11 +121,55 @@ void main() {
 
       expect(find.text('My games'), findsOneWidget);
       expect(find.text('Stardustry'), findsOneWidget);
+      expect(find.text('Admin'), findsNothing);
+    });
+
+    testWidgets('renders the admin button when logged and is admin',
+        (tester) async {
+      when(authRepository.currentUser)
+          .thenAnswer((_) async => const Session(id: '1', isAdmin: true));
+      when(() => authRepository.authStateChanges)
+          .thenAnswer((_) => Stream.empty());
+
+      when(() => gamesRepository.fetchUserGames('1')).thenAnswer(
+        (_) async => [
+          const Game(
+            id: '1',
+            name: 'Stardustry',
+            description: 'A Great game releasing soon!',
+            thumb: '',
+          ),
+        ],
+      );
+
+      await mockNetworkImages(() async {
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              gamesRepositoryProvider().overrideWith(
+                (_) => gamesRepository,
+              ),
+              authRepositoryProvider().overrideWith(
+                (_) => authRepository,
+              ),
+            ],
+            child: MaterialApp(
+              theme: flutterNesTheme(),
+              home: HomeView(),
+            ),
+          ),
+        );
+
+        await tester.pumpAndSettle();
+      });
+
+      expect(find.text('Admin'), findsOneWidget);
     });
 
     testWidgets('renders error when something goes wrong while athenticated',
         (tester) async {
-      when(() => authRepository.currentUser).thenReturn(const Session(id: '1'));
+      when(authRepository.currentUser)
+          .thenAnswer((_) async => const Session(id: '1', isAdmin: false));
       when(() => authRepository.authStateChanges)
           .thenAnswer((_) => Stream.empty());
 
@@ -158,7 +203,7 @@ void main() {
     testWidgets(
         'renders error when something goes wrong while non athenticated',
         (tester) async {
-      when(() => authRepository.currentUser).thenThrow(Exception('Error'));
+      when(authRepository.currentUser).thenThrow(Exception('Error'));
       when(() => authRepository.authStateChanges)
           .thenAnswer((_) => Stream.empty());
 
@@ -186,8 +231,9 @@ void main() {
       expect(find.text('Exception: Error'), findsOneWidget);
     });
 
-    testWidgets('navigates to the ame page', (tester) async {
-      when(() => authRepository.currentUser).thenReturn(const Session(id: '1'));
+    testWidgets('navigates to the game page', (tester) async {
+      when(authRepository.currentUser)
+          .thenAnswer((_) async => const Session(id: '1', isAdmin: false));
       when(() => authRepository.authStateChanges)
           .thenAnswer((_) => Stream.empty());
 
@@ -232,6 +278,55 @@ void main() {
 
       await tester.tap(find.byType(NesContainer));
 
+      verify(() => navigator.go(any())).called(1);
+    });
+
+    testWidgets('navigates to the adming page when is admin', (tester) async {
+      when(authRepository.currentUser)
+          .thenAnswer((_) async => const Session(id: '1', isAdmin: true));
+      when(() => authRepository.authStateChanges)
+          .thenAnswer((_) => Stream.empty());
+
+      when(() => gamesRepository.fetchUserGames('1')).thenAnswer(
+        (_) async => [
+          const Game(
+            id: '1',
+            name: 'Stardustry',
+            description: 'A Great game releasing soon!',
+            thumb: '',
+          ),
+        ],
+      );
+
+      final navigator = MockGoRouter();
+      when(navigator.canPop).thenReturn(false);
+      when(() => navigator.go(any())).thenAnswer((_) async {});
+
+      await mockNetworkImages(() async {
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              gamesRepositoryProvider().overrideWith(
+                (_) => gamesRepository,
+              ),
+              authRepositoryProvider().overrideWith(
+                (_) => authRepository,
+              ),
+            ],
+            child: MaterialApp(
+              theme: flutterNesTheme(),
+              home: MockGoRouterProvider(
+                goRouter: navigator,
+                child: HomeView(),
+              ),
+            ),
+          ),
+        );
+
+        await tester.pumpAndSettle();
+      });
+
+      await tester.tap(find.text('Admin'));
       verify(() => navigator.go(any())).called(1);
     });
   });

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:game_hub/admin/admin.dart';
 import 'package:game_hub/game/game.dart';
 import 'package:game_hub/home/home.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -18,6 +19,10 @@ final _router = GoRouter(
       builder: (context, state) => GameView(
         gameId: state.pathParameters['gameId'] ?? '',
       ),
+    ),
+    GoRoute(
+      path: '/admin',
+      builder: (context, state) => const AdminView(),
     ),
   ],
 );

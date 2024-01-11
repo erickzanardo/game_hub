@@ -4,14 +4,15 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_state.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class AuthState extends _$AuthState {
   @override
   Future<Session?> build() async {
     final authRepository = ref.read(authRepositoryProvider());
-    final session = authRepository.currentUser;
+    final session = await authRepository.currentUser();
 
-    final sub = authRepository.authStateChanges.listen((user) {
+    final sub = authRepository.authStateChanges.listen((newUser) async {
+      final user = await newUser;
       state = AsyncValue.data(user);
     });
 

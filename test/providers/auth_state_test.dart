@@ -29,7 +29,8 @@ void main() {
     }
 
     test('builds correctly', () async {
-      when(() => authRepository.currentUser).thenReturn(Session(id: '1'));
+      when(authRepository.currentUser)
+          .thenAnswer((_) async => Session(id: '1', isAdmin: false));
       when(() => authRepository.authStateChanges)
           .thenAnswer((_) => Stream.empty());
 
@@ -39,12 +40,12 @@ void main() {
 
       await expectLater(
         future,
-        completion(Session(id: '1')),
+        completion(Session(id: '1', isAdmin: false)),
       );
     });
 
     test('can authenticate', () async {
-      when(() => authRepository.currentUser).thenReturn(null);
+      when(authRepository.currentUser).thenAnswer((_) async => null);
       when(() => authRepository.authStateChanges)
           .thenAnswer((_) => Stream.empty());
       when(authRepository.authenticate).thenAnswer((_) async {});
@@ -57,21 +58,28 @@ void main() {
     });
 
     test('emits authenticated when a new session arrives', () async {
-      final controller = StreamController<Session>();
-      when(() => authRepository.currentUser).thenReturn(null);
+      final controller = StreamController<Future<Session?>>();
+      when(authRepository.currentUser).thenAnswer((_) async => null);
+
       when(() => authRepository.authStateChanges).thenAnswer(
         (_) => controller.stream,
       );
 
       final container = createTestContainer();
 
-      controller.add(Session(id: '1'));
+      final completer = Completer<Session?>();
 
-      final future = container.read(authStateProvider.future);
+      container.listen(authStateProvider, (previous, next) async {
+        if (next.value != null) {
+          completer.complete(next.value);
+        }
+      });
+
+      controller.add(Future.value(Session(id: '1', isAdmin: false)));
 
       await expectLater(
-        future,
-        completion(Session(id: '1')),
+        completer.future,
+        completion(Session(id: '1', isAdmin: false)),
       );
     });
   });

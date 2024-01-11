@@ -32,7 +32,8 @@ void main() {
     }
 
     test('builds correctly', () async {
-      when(() => authRepository.currentUser).thenReturn(const Session(id: ''));
+      when(authRepository.currentUser)
+          .thenAnswer((_) async => const Session(id: '', isAdmin: false));
 
       when(() => gamesRepository.fetchUserGames(any()))
           .thenAnswer((_) async => [
@@ -61,7 +62,7 @@ void main() {
     });
 
     test('throws when there is no session', () async {
-      when(() => authRepository.currentUser).thenReturn(null);
+      when(authRepository.currentUser).thenAnswer((_) async => null);
 
       final container = createTestContainer();
 

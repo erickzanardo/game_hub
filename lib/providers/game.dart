@@ -9,7 +9,7 @@ class GetGame extends _$GetGame {
   @override
   Future<Game> build(String gameId) async {
     final authRepository = ref.read(authRepositoryProvider());
-    final session = authRepository.currentUser;
+    final session = await authRepository.currentUser();
 
     if (session == null) {
       throw Exception('User not authenticated');
