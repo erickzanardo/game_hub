@@ -14,23 +14,28 @@ import '../../helpers/helpers.dart';
 
 class _MockGamesRepository extends Mock implements GamesRepository {}
 
+class _MockGameVersionsRepository extends Mock
+    implements GameVersionsRepository {}
+
 class _MockAuthRepository extends Mock implements AuthRepository {}
 
 void main() {
   group('GameView', () {
     late GamesRepository gamesRepository;
+    late GameVersionsRepository gameVersionsRepository;
     late AuthRepository authRepository;
 
     setUp(() {
       gamesRepository = _MockGamesRepository();
+      gameVersionsRepository = _MockGameVersionsRepository();
       authRepository = _MockAuthRepository();
 
-      when(() => gamesRepository.fetchGameVersions(any()))
+      when(() => gameVersionsRepository.fetchGameVersions(any()))
           .thenAnswer((_) async => []);
     });
 
     testWidgets('renders', (tester) async {
-      when(() => gamesRepository.fetchGame('1')).thenAnswer(
+      when(() => gamesRepository.fetch('1')).thenAnswer(
         (_) async => const Game(
           id: '1',
           name: 'Stardustry',
@@ -39,7 +44,7 @@ void main() {
         ),
       );
 
-      when(() => gamesRepository.fetchGameVersions('1')).thenAnswer(
+      when(() => gameVersionsRepository.fetchGameVersions('1')).thenAnswer(
         (_) async => const [
           GameVersion(
             id: 'id',
@@ -64,6 +69,9 @@ void main() {
               overrides: [
                 gamesRepositoryProvider().overrideWith(
                   (_) => gamesRepository,
+                ),
+                gameVersionsRepositoryProvider().overrideWith(
+                  (_) => gameVersionsRepository,
                 ),
                 authRepositoryProvider().overrideWith(
                   (_) => authRepository,
@@ -92,7 +100,7 @@ void main() {
       tester.setScreenSize(Size(1280, 1280));
       addTearDown(tester.view.resetPhysicalSize);
 
-      when(() => gamesRepository.fetchGame('1')).thenAnswer(
+      when(() => gamesRepository.fetch('1')).thenAnswer(
         (_) async => const Game(
           id: '1',
           name: 'Stardustry',
@@ -101,7 +109,7 @@ void main() {
         ),
       );
 
-      when(() => gamesRepository.fetchGameVersions('1')).thenAnswer(
+      when(() => gameVersionsRepository.fetchGameVersions('1')).thenAnswer(
         (_) async => const [
           GameVersion(
             id: 'id',
@@ -125,6 +133,9 @@ void main() {
               overrides: [
                 gamesRepositoryProvider().overrideWith(
                   (_) => gamesRepository,
+                ),
+                gameVersionsRepositoryProvider().overrideWith(
+                  (_) => gameVersionsRepository,
                 ),
                 authRepositoryProvider().overrideWith(
                   (_) => authRepository,
@@ -150,7 +161,7 @@ void main() {
       tester.setScreenSize(Size(1280, 1280));
       addTearDown(tester.view.resetPhysicalSize);
 
-      when(() => gamesRepository.fetchGame('1')).thenAnswer(
+      when(() => gamesRepository.fetch('1')).thenAnswer(
         (_) async => const Game(
           id: '1',
           name: 'Stardustry',
@@ -159,7 +170,7 @@ void main() {
         ),
       );
 
-      when(() => gamesRepository.fetchGameVersions('1')).thenAnswer(
+      when(() => gameVersionsRepository.fetchGameVersions('1')).thenAnswer(
         (_) async => const [
           GameVersion(
             id: 'id',
@@ -183,6 +194,9 @@ void main() {
               overrides: [
                 gamesRepositoryProvider().overrideWith(
                   (_) => gamesRepository,
+                ),
+                gameVersionsRepositoryProvider().overrideWith(
+                  (_) => gameVersionsRepository,
                 ),
                 authRepositoryProvider().overrideWith(
                   (_) => authRepository,
@@ -208,7 +222,7 @@ void main() {
       tester.setScreenSize(Size(1280, 1280));
       addTearDown(tester.view.resetPhysicalSize);
 
-      when(() => gamesRepository.fetchGame('1')).thenAnswer(
+      when(() => gamesRepository.fetch('1')).thenAnswer(
         (_) async => const Game(
           id: '1',
           name: 'Stardustry',
@@ -217,7 +231,7 @@ void main() {
         ),
       );
 
-      when(() => gamesRepository.fetchGameVersions('1')).thenAnswer(
+      when(() => gameVersionsRepository.fetchGameVersions('1')).thenAnswer(
         (_) async => const [
           GameVersion(
             id: 'id',
@@ -242,6 +256,9 @@ void main() {
                 gamesRepositoryProvider().overrideWith(
                   (_) => gamesRepository,
                 ),
+                gameVersionsRepositoryProvider().overrideWith(
+                  (_) => gameVersionsRepository,
+                ),
                 authRepositoryProvider().overrideWith(
                   (_) => authRepository,
                 ),
@@ -263,7 +280,7 @@ void main() {
     });
 
     testWidgets('renders a loading indicator', (tester) async {
-      when(() => gamesRepository.fetchGame('1')).thenAnswer(
+      when(() => gamesRepository.fetch('1')).thenAnswer(
         (_) async => const Game(
           id: '1',
           name: 'Stardustry',
@@ -283,6 +300,9 @@ void main() {
                 gamesRepositoryProvider().overrideWith(
                   (_) => gamesRepository,
                 ),
+                gameVersionsRepositoryProvider().overrideWith(
+                  (_) => gameVersionsRepository,
+                ),
                 authRepositoryProvider().overrideWith(
                   (_) => authRepository,
                 ),
@@ -300,7 +320,7 @@ void main() {
     });
 
     testWidgets('renders an error when something goes wrong', (tester) async {
-      when(() => gamesRepository.fetchGame('1')).thenAnswer(
+      when(() => gamesRepository.fetch('1')).thenAnswer(
         (_) async => Game(
           id: '1',
           name: 'Stardustry',
@@ -318,6 +338,9 @@ void main() {
               overrides: [
                 gamesRepositoryProvider().overrideWith(
                   (_) => gamesRepository,
+                ),
+                gameVersionsRepositoryProvider().overrideWith(
+                  (_) => gameVersionsRepository,
                 ),
                 authRepositoryProvider().overrideWith(
                   (_) => authRepository,
@@ -339,7 +362,7 @@ void main() {
 
     testWidgets('renders an error when loading the versions fail',
         (tester) async {
-      when(() => gamesRepository.fetchGameVersions('1')).thenThrow(
+      when(() => gameVersionsRepository.fetchGameVersions('1')).thenThrow(
         Exception('Error fetching game versions'),
       );
 
@@ -350,6 +373,9 @@ void main() {
               overrides: [
                 gamesRepositoryProvider().overrideWith(
                   (_) => gamesRepository,
+                ),
+                gameVersionsRepositoryProvider().overrideWith(
+                  (_) => gameVersionsRepository,
                 ),
                 authRepositoryProvider().overrideWith(
                   (_) => authRepository,

@@ -66,9 +66,19 @@ class CrudView<T> extends ConsumerWidget {
                                       Expanded(
                                         child: listItemBuilder(context, item),
                                       ),
-                                      NesIconButton(icon: NesIcons.remove),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: NesIconButton(
+                                            icon: NesIcons.remove),
+                                      ),
                                       if (actionsBuilder != null)
-                                        ...actionsBuilder!(context, item),
+                                        ...actionsBuilder!(context, item).map(
+                                          (e) => Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 8.0),
+                                            child: e,
+                                          ),
+                                        ),
                                     ],
                                   ),
                                 ),

@@ -88,15 +88,8 @@ class GameVersionsRepository with CrudRepositoryAdapter<GameVersion> {
     return gameVersion.toGameVersion();
   }
 
-  Future<List<GameVersion>> fetchGameVersions(String id) async {
-    final versions = await _firestore
-        .collection('games_versions')
-        .where('game_id', isEqualTo: id)
-        .get();
-
-    return versions.docs.map((version) {
-      return version.toGameVersion();
-    }).toList();
+  Future<List<GameVersion>> fetchGameVersions(String id) {
+    return fetchAll(context: GameVersionsCrudContext(id));
   }
 
   @override
