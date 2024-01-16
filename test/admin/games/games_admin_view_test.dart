@@ -15,7 +15,7 @@ import '../../helpers/helpers.dart';
 class _MockGamesRepository extends Mock implements GamesRepository {}
 
 void main() {
-  group('CrudView', () {
+  group('GamesAdminView', () {
     late GamesRepository gamesRepository;
 
     setUp(() {
@@ -56,7 +56,7 @@ void main() {
       expect(find.text('Stardustry'), findsOneWidget);
     });
 
-    testWidgets('renders', (tester) async {
+    testWidgets('navigates to game versions admin', (tester) async {
       tester.setScreenSize(Size(2000, 2000));
       when(() => gamesRepository.fetchAll(context: any(named: 'context')))
           .thenAnswer(
