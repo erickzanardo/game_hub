@@ -2,6 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:game_hub/crud/crud.dart';
 import 'package:game_hub/repositories/repositories.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -173,6 +174,87 @@ void main() {
             linuxUrl: 'https://linux.example.com',
           )
         ]),
+      );
+    });
+
+    test('fetch returns a game version', () async {
+      final gameVersionsRepository =
+          GameVersionsRepository(firestore: firestore);
+
+      final docRef = MockDocumentReference();
+      when(() => gameVersionsCollection.doc('1')).thenReturn(docRef);
+
+      when(docRef.get).thenAnswer(
+        (_) async {
+          final snapshot = MockDocumentSnapshot();
+          when(() => snapshot.id).thenReturn('1');
+          when(() => snapshot.data()).thenReturn({
+            'id': '1',
+            'game_id': '',
+            'description': 'A Great game releasing soon!',
+            'version': '',
+          });
+          return snapshot;
+        },
+      );
+
+      final game = await gameVersionsRepository.fetch('1');
+
+      expect(
+        game,
+        equals(
+          GameVersion(
+            id: '1',
+            gameId: '',
+            description: 'A Great game releasing soon!',
+            version: '',
+          ),
+        ),
+      );
+    });
+
+    test('create throws UnimplementedError', () async {
+      final gameVersionsRepository =
+          GameVersionsRepository(firestore: firestore);
+
+      expect(
+        () => gameVersionsRepository.create(
+          GameVersion(
+            id: '',
+            gameId: '',
+            version: '1',
+            description: 'A Great game releasing soon!',
+          ),
+          context: RootCrudContext(),
+        ),
+        throwsA(isA<UnimplementedError>()),
+      );
+    });
+
+    test('delete throws UnimplementedError', () async {
+      final gameVersionsRepository =
+          GameVersionsRepository(firestore: firestore);
+
+      expect(
+        () => gameVersionsRepository.delete(''),
+        throwsA(isA<UnimplementedError>()),
+      );
+    });
+
+    test('update throws UnimplementedError', () async {
+      final gameVersionsRepository =
+          GameVersionsRepository(firestore: firestore);
+
+      expect(
+        () => gameVersionsRepository.update(
+          GameVersion(
+            id: '',
+            gameId: '',
+            version: '1',
+            description: 'A Great game releasing soon!',
+          ),
+        ),
+        throwsA(isA<UnimplementedError>()),
       );
     });
   });

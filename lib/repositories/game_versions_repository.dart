@@ -83,7 +83,7 @@ class GameVersionsRepository with CrudRepositoryAdapter<GameVersion> {
   @override
   Future<GameVersion> fetch(String id) async {
     final gameVersion =
-        await _firestore.collection('game_versions').doc(id).get();
+        await _firestore.collection('games_versions').doc(id).get();
 
     return gameVersion.toGameVersion();
   }

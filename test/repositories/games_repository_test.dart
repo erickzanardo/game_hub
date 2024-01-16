@@ -2,6 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:game_hub/crud/crud.dart';
 import 'package:game_hub/repositories/repositories.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -174,6 +175,88 @@ void main() {
             thumb: '',
           ),
         ]),
+      );
+    });
+
+    test('fetchAll returns all of games', () async {
+      final gamesRepository = GamesRepository(firestore: firestore);
+
+      mockFetchAllOnCollection(
+        collection: gamesCollection,
+        result: {
+          '1': {
+            'name': 'Stardustry',
+            'description': 'A Great game releasing soon!',
+            'thumb': '',
+          },
+          '2': {
+            'name': 'Treelings',
+            'description': 'A Great game releasing soon!',
+            'thumb': '',
+          },
+        },
+      );
+
+      final games = await gamesRepository.fetchAll(context: RootCrudContext());
+
+      expect(
+        games,
+        equals([
+          Game(
+            id: '1',
+            name: 'Stardustry',
+            description: 'A Great game releasing soon!',
+            thumb: '',
+          ),
+          Game(
+            id: '2',
+            name: 'Treelings',
+            description: 'A Great game releasing soon!',
+            thumb: '',
+          ),
+        ]),
+      );
+    });
+
+    test('create throws UnimplementedError', () async {
+      final gamesRepository = GamesRepository(firestore: firestore);
+
+      expect(
+        () => gamesRepository.create(
+          Game(
+            id: '',
+            name: 'Stardustry',
+            description: 'A Great game releasing soon!',
+            thumb: '',
+          ),
+          context: RootCrudContext(),
+        ),
+        throwsA(isA<UnimplementedError>()),
+      );
+    });
+
+    test('delete throws UnimplementedError', () async {
+      final gamesRepository = GamesRepository(firestore: firestore);
+
+      expect(
+        () => gamesRepository.delete(''),
+        throwsA(isA<UnimplementedError>()),
+      );
+    });
+
+    test('update throws UnimplementedError', () async {
+      final gamesRepository = GamesRepository(firestore: firestore);
+
+      expect(
+        () => gamesRepository.update(
+          Game(
+            id: '',
+            name: 'Stardustry',
+            description: 'A Great game releasing soon!',
+            thumb: '',
+          ),
+        ),
+        throwsA(isA<UnimplementedError>()),
       );
     });
   });

@@ -83,3 +83,22 @@ void mockQueryOnCollection({
   final query = createQuery(collection);
   when(() => query.get()).thenAnswer((_) async => querySnapshot);
 }
+
+void mockFetchAllOnCollection({
+  required CollectionReference collection,
+  required Map<String, Map<String, dynamic>> result,
+}) {
+  final querySnapshot = MockQuerySnapshot();
+
+  final documents = <MockQueryDocumentSnapshot>[];
+  for (final entry in result.entries) {
+    final document = MockQueryDocumentSnapshot();
+    when(() => document.id).thenReturn(entry.key);
+    when(() => document.data()).thenReturn(entry.value);
+    when(() => document.exists).thenReturn(true);
+    documents.add(document);
+  }
+  when(() => querySnapshot.docs).thenAnswer((_) => documents);
+
+  when(() => collection.get()).thenAnswer((_) async => querySnapshot);
+}

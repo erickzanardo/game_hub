@@ -10,5 +10,6 @@ GameVersionsRepository gameVersionsRepository(
   FirebaseFirestore? firestore,
 }) {
   return GameVersionsRepository(
-      firestore: firestore ?? FirebaseFirestore.instance);
+    firestore: firestore ?? FirebaseFirestore.instance, // coverage:ignore-line
+  );
 }
