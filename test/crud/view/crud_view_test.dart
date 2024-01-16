@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_hub/crud/crud.dart';
-import 'package:game_hub/game/game.dart';
-import 'package:game_hub/providers/providers.dart';
 import 'package:game_hub/repositories/repositories.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:nes_ui/nes_ui.dart';

@@ -21,10 +21,11 @@ class GamesAdminView extends ConsumerWidget {
       actionsBuilder: (context, game) {
         return [
           NesIconButton(
-              icon: NesIcons.paste,
-              onPress: () {
-                context.go('/admin/games/${game.id}/versions');
-              }),
+            icon: NesIcons.paste,
+            onPress: () {
+              context.go('/admin/games/${game.id}/versions');
+            },
+          ),
         ];
       },
     );
