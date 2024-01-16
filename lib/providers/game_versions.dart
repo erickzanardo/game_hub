@@ -8,7 +8,7 @@ part 'game_versions.g.dart';
 class GameVersions extends _$GameVersions {
   @override
   Future<List<GameVersion>> build(String gameId) async {
-    final gamesRepository = ref.read(gamesRepositoryProvider());
+    final gamesRepository = ref.read(gameVersionsRepositoryProvider());
 
     return gamesRepository.fetchGameVersions(gameId);
   }

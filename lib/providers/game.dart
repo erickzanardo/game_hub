@@ -16,7 +16,7 @@ class GetGame extends _$GetGame {
     }
 
     final gamesRepository = ref.read(gamesRepositoryProvider());
-    final game = await gamesRepository.fetchGame(gameId);
+    final game = await gamesRepository.fetch(gameId);
     return game;
   }
 }

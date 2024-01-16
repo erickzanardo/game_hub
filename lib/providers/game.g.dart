@@ -6,7 +6,7 @@ part of 'game.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$getGameHash() => r'aed5a9aff0199f7a605e92ae8b34708bc97fe380';
+String _$getGameHash() => r'ffe912b40bd1176adf1d9439b5623fcb5eb73eca';
 
 /// Copied from Dart SDK
 class _SystemHash {

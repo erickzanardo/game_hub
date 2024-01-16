@@ -35,7 +35,7 @@ void main() {
       when(authRepository.currentUser)
           .thenAnswer((_) async => const Session(id: '', isAdmin: false));
 
-      when(() => gamesRepository.fetchGame(any())).thenAnswer(
+      when(() => gamesRepository.fetch(any())).thenAnswer(
         (_) async => Game(
           id: '1',
           name: 'Stardustry',
