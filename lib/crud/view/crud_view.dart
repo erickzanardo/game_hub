@@ -83,7 +83,20 @@ class CrudView<T> extends ConsumerWidget {
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: NesIconButton(
-                                            icon: NesIcons.remove),
+                                          icon: NesIcons.remove,
+                                          onPress: () async {
+                                            final confirmation =
+                                                await NesConfirmDialog.show(
+                                              context: context,
+                                            );
+
+                                            if (confirmation ?? false) {
+                                              ref
+                                                  .read(provider.notifier)
+                                                  .delete(item.id);
+                                            }
+                                          },
+                                        ),
                                       ),
                                       if (actionsBuilder != null)
                                         ...actionsBuilder!(context, item).map(

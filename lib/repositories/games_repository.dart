@@ -96,9 +96,8 @@ class GamesRepository with CrudRepositoryAdapter<Game> {
   }
 
   @override
-  Future<void> delete(String id) {
-    // TODO: implement delete
-    throw UnimplementedError();
+  Future<void> delete(String id) async {
+    await _firestore.collection('games').doc(id).delete();
   }
 
   @override

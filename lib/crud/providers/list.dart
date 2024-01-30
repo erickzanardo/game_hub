@@ -26,4 +26,16 @@ class CrudList extends _$CrudList {
       state = AsyncValue.error(e, s);
     }
   }
+
+  void delete(String id) async {
+    state = const AsyncValue.loading();
+
+    try {
+      await adapter.delete(id);
+      state =
+          AsyncValue.data(state.requireValue.where((e) => e.id != id).toList());
+    } catch (e, s) {
+      state = AsyncValue.error(e, s);
+    }
+  }
 }
