@@ -85,9 +85,14 @@ class GamesRepository with CrudRepositoryAdapter<Game> {
   Future<Game> create(
     Game data, {
     required CrudContext context,
-  }) {
-    // TODO: implement create
-    throw UnimplementedError();
+  }) async {
+    final id = await _firestore.collection('games').add({
+      'name': data.name,
+      'description': data.description,
+      'thumb': data.thumb,
+    });
+
+    return data.copyWith(id: id.id);
   }
 
   @override
@@ -111,5 +116,40 @@ class GamesRepository with CrudRepositoryAdapter<Game> {
   Future<Game> update(Game data) {
     // TODO: implement update
     throw UnimplementedError();
+  }
+
+  @override
+  List<CrudField<Game, dynamic>> get fields => [
+        CrudField<Game, String>(
+          field: 'name',
+          label: 'Name',
+          getter: (game) => game.name,
+          isRequired: true,
+          validator: CrudFieldValidators.notEmptyString,
+        ),
+        CrudField<Game, String>(
+          field: 'description',
+          label: 'Description',
+          getter: (game) => game.description,
+          isRequired: true,
+          validator: CrudFieldValidators.notEmptyString,
+        ),
+        CrudField<Game, String>(
+          field: 'thumb',
+          label: 'Thumb',
+          getter: (game) => game.thumb,
+          isRequired: true,
+          validator: CrudFieldValidators.notEmptyString,
+        )
+      ];
+
+  @override
+  Game fromValues(String? id, Map<String, dynamic> values) {
+    return Game(
+      id: id ?? '',
+      name: values['name'] as String? ?? '',
+      description: values['description'] as String? ?? '',
+      thumb: values['thumb'] as String? ?? '',
+    );
   }
 }

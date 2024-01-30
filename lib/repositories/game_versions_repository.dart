@@ -130,4 +130,15 @@ class GameVersionsRepository with CrudRepositoryAdapter<GameVersion> {
     // TODO: implement update
     throw UnimplementedError();
   }
+
+  @override
+  // TODO: implement fields
+  List<CrudField<GameVersion, dynamic>> get fields =>
+      throw UnimplementedError();
+
+  @override
+  GameVersion fromValues(String? id, Map<String, dynamic> values) {
+    // TODO: implement fromValues
+    throw UnimplementedError();
+  }
 }

@@ -29,12 +29,11 @@ class CrudView<T> extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final listState = ref.watch(
-      crudListProvider(
-        adapter: repository,
-        crudContext: crudContext,
-      ),
+    final provider = crudListProvider(
+      adapter: repository,
+      crudContext: crudContext,
     );
+    final listState = ref.watch(provider);
 
     return Scaffold(
       body: listState.when(
@@ -50,6 +49,21 @@ class CrudView<T> extends ConsumerWidget {
                     Text(
                       title,
                       style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: NesIconButton(
+                        icon: NesIcons.add,
+                        onPress: () async {
+                          await CrudForm.show(
+                            context,
+                            repository: repository,
+                            crudContext: crudContext,
+                          );
+
+                          ref.read(provider.notifier).refresh();
+                        },
+                      ),
                     ),
                     const Divider(),
                     Expanded(
